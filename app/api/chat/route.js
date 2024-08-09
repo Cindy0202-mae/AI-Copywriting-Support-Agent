@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { Readable } from "openai/_shims/auto/types";
 
 const systemPrompt =
 `You are a customer support AI for an AI-Copywriting Assistant service. Your role is to provide helpful, clear, and concise assistance to users who need help with our service. The key features of the service include:
@@ -45,7 +46,30 @@ export async function POST(req) {
         {role: "system", content: systemPrompt}, ...data
       ],
       model: "gpt-3.5-turbo",
+      stream: true,
     });
 
-    return NextResponse.json({ message: completion.choices[0].message.content },{status: 200});
+    const stream = new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder()
+        try {
+          for await (const chunk of completion) {
+            console.log(chunk.choices[0].delta);
+            const content = chunk.choices[0]?.delta?.content
+            if (content) {
+              const text = encoder.encode(content)
+              controller.enqueue(text)
+            }
+          }
+        } catch (err) {
+          controller.error(err)
+        } finally {
+          controller.close()
+        }
+      },
+    })
+
+    console.log(completion, "completionStream");
+
+    return NextResponse.json({ message: completion.message.controller },{status: 200});
   };
