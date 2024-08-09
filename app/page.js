@@ -1,19 +1,29 @@
 "use client";
 import { useState } from "react";
-import { Box, Stack, TextField, Button, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Stack,
+  TextField,
+  Button,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
+import React from "react";
 
 export default function Home() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: `Hi! I'm the Headstarter Support Agent, how can I assist you today?`,
+      content: `Hi! I'm the AI Copywriting Support Agent, how can I assist you today?`,
     },
   ]);
-
   const [message, setMessage] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   const sendMessage = async () => {
     if (message.trim() === "") return; // Prevent sending empty messages
@@ -34,7 +44,7 @@ export default function Home() {
       const decoder = new TextDecoder();
 
       let result = "";
-      return reader.read().then(function proccessText({ done, value }) {
+      return reader.read().then(function processText({ done, value }) {
         if (done) {
           return result;
         }
@@ -50,7 +60,7 @@ export default function Home() {
             },
           ];
         });
-        return reader.read().then(proccessText);
+        return reader.read().then(processText);
       });
     });
   };
@@ -62,6 +72,15 @@ export default function Home() {
     }
   };
 
+  const formatMessage = (content) => {
+    return content.split("\n").map((line, index) => (
+      <React.Fragment key={index}>
+        {index > 0 && <br />}
+        {line}
+      </React.Fragment>
+    ));
+  };
+
   return (
     <Box
       width="100vw"
@@ -69,7 +88,7 @@ export default function Home() {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      bgcolor="#e8f4f8"
+      bgcolor={darkMode ? "#404040" : "#e8f4f8"}
     >
       {/* Chat Container */}
       <Stack
@@ -79,24 +98,39 @@ export default function Home() {
         height="calc(100vh - 56px)" // Adjust height to account for the banner
         borderRadius={2}
         overflow="hidden"
-        bgcolor="white"
-        boxShadow="0 4px 8px rgba(0,0,0,0.1)"
+        bgcolor={darkMode ? "#333" : "white"}
+        boxShadow={
+          darkMode ? "0 4px 8px rgba(0,0,0,0.5)" : "0 4px 8px rgba(0,0,0,0.1)"
+        }
         mt={2}
       >
         {/* Banner */}
         <Box
           width="100%"
-          bgcolor="#007BFF"
-          color="white"
+          bgcolor={darkMode ? "#1e1e1e" : "#007BFF"}
+          color={darkMode ? "#ffffff" : "white"}
           p={2}
           display="flex"
-          justifyContent="center"
+          justifyContent="space-between"
           alignItems="center"
-          borderBottom="1px solid #ddd"
+          borderBottom={`1px solid ${darkMode ? "#444" : "#ddd"}`}
         >
           <Typography variant="h6" fontWeight="bold">
-            Headstarter Support Agent
+            AI Copywriting Support Agent
           </Typography>
+          <IconButton
+            onClick={() => setDarkMode(!darkMode)}
+            sx={{
+              color: darkMode ? "#fff" : "#000",
+              backgroundColor: darkMode ? "#333" : "#fff",
+              borderRadius: "50%",
+              "&:hover": {
+                backgroundColor: darkMode ? "#444" : "#f0f0f0",
+              },
+            }}
+          >
+            {darkMode ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
         </Box>
 
         {/* Messages */}
@@ -118,16 +152,24 @@ export default function Home() {
               <Box
                 bgcolor={
                   message.role === "assistant"
-                    ? "#007BFF" // Blue for assistant
-                    : "#28a745" // Green for user
+                    ? darkMode
+                      ? "#555"
+                      : "#007BFF" // Adjust color for dark mode
+                    : darkMode
+                    ? "#666"
+                    : "#28a745" // Adjust color for dark mode
                 }
                 color="white"
-                borderRadius={16}
+                borderRadius={2}
                 p={2}
                 maxWidth="80%"
                 boxShadow="0 2px 4px rgba(0,0,0,0.1)"
+                sx={{
+                  wordBreak: "break-word",
+                  whiteSpace: "pre-wrap", // Preserve whitespace and line breaks
+                }}
               >
-                {message.content}
+                {formatMessage(message.content)}
               </Box>
             </Box>
           ))}
@@ -139,8 +181,8 @@ export default function Home() {
           spacing={2}
           padding={2}
           alignItems="center"
-          bgcolor="#f1f1f1"
-          borderTop="1px solid #ddd"
+          bgcolor={darkMode ? "#424242" : "#f1f1f1"}
+          borderTop={`1px solid ${darkMode ? "#666" : "#ddd"}`}
         >
           <TextField
             label="Type your message"
@@ -149,10 +191,31 @@ export default function Home() {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             multiline
-            rows={1}
+            minRows={1}
+            maxRows={10} // Allow the text area to grow to a maximum of 10 rows
             variant="outlined"
             size="small"
-            sx={{ bgcolor: "white", borderRadius: 1 }}
+            sx={{
+              bgcolor: darkMode ? "#424242" : "white", // Background color for dark mode
+              borderRadius: 1,
+              "& .MuiInputLabel-root": {
+                color: darkMode ? "#ffffff" : "black", // Label color for dark mode
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: darkMode ? "#666" : "#ccc", // Border color for dark mode
+                },
+                "&:hover fieldset": {
+                  borderColor: darkMode ? "#ffffff" : "#007BFF", // Border color on hover
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: darkMode ? "#ffffff" : "#007BFF", // Border color when focused
+                },
+              },
+              "& .MuiInputBase-input": {
+                color: darkMode ? "#ffffff" : "black", // Input text color for dark mode
+              },
+            }}
           />
           <Button
             variant="contained"
