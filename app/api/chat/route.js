@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import { Readable } from "openai/_shims/auto/types";
 
 const systemPrompt =
 `You are a customer support AI for an AI-Copywriting Assistant service. Your role is to provide helpful, clear, and concise assistance to users who need help with our service. The key features of the service include:
@@ -39,7 +38,7 @@ export async function POST(req) {
 
     const openai = new OpenAI();
     const data = await req.json();
-    console.log(data);
+    console.log(data, "data");
 
     const completion = await openai.chat.completions.create({
       messages: [
@@ -71,5 +70,5 @@ export async function POST(req) {
 
     console.log(completion, "completionStream");
 
-    return NextResponse.json({ message: completion.message.controller },{status: 200});
+    return new NextResponse(stream)
   };
