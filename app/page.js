@@ -9,6 +9,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
+import RatingModal from "./components/Rating";
 import React from "react";
 
 export default function Home() {
@@ -20,10 +21,12 @@ export default function Home() {
   ]);
   const [message, setMessage] = useState("");
   const [darkMode, setDarkMode] = useState(false);
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [isModalopen, setIsModalOpen] = useState(false);
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+    console.log(isModalopen);
+  }
+  const handleModalClose = () => setIsModalOpen(false);
 
   const sendMessage = async () => {
     if (message.trim() === "") return; // Prevent sending empty messages
@@ -228,34 +231,12 @@ export default function Home() {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleOpen}
+            onClick={handleModalOpen}
             sx={{ borderRadius: 1 }}
           >
             End
           </Button>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-          <Box
-            width="30%"
-            bgcolor="#007BFF"
-            color="white"
-            p={2}
-            borderBottom="1px solid #ddd">
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
-          </Modal>
+          <RatingModal isOpen={isModalopen} onClose={handleModalClose} />
         </Stack>
       </Stack>
     </Box>
