@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Box, Stack, TextField, Button, Typography } from "@mui/material";
+import { Box, Stack, TextField, Button, Modal, Typography } from "@mui/material";
 
 export default function Home() {
   const [messages, setMessages] = useState([
@@ -11,6 +11,9 @@ export default function Home() {
   ]);
 
   const [message, setMessage] = useState("");
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const sendMessage = async () => {
     if (message.trim() === "") return; // Prevent sending empty messages
@@ -159,6 +162,37 @@ export default function Home() {
           >
             Send
           </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpen}
+            sx={{ borderRadius: 1 }}
+          >
+            End
+          </Button>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+          <Box
+            width="30%"
+            bgcolor="#007BFF"
+            color="white"
+            p={2}
+            borderBottom="1px solid #ddd">
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography>
+        </Box>
+          </Modal>
         </Stack>
       </Stack>
     </Box>
