@@ -1,7 +1,9 @@
 import Rating from "@mui/material/Rating";
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
-import { Typography, Modal, Box, Button } from "@mui/material";
+import { Typography, Modal, Box, Button, TextField } from "@mui/material";
 import React from "react";
+import { Opacity } from "@mui/icons-material";
+import StarIcon from '@mui/icons-material/Star';
 
 const style = {
   position: "absolute",
@@ -19,9 +21,33 @@ const style = {
   p: 4,
 };
 
+const labels = {
+  0.5: 'Useless',
+  1: 'Useless+',
+  1.5: 'Poor',
+  2: 'Poor+',
+  2.5: 'Ok',
+  3: 'Ok+',
+  3.5: 'Good',
+  4: 'Good+',
+  4.5: 'Excellent',
+  5: 'Excellent+',
+}
+
+function getLabelsText(value) {
+  return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
+  
+}
+
 export default function RatingModal({ isOpen, onClose }) {
   const [value, setValue] = React.useState(0);
-  const [submitted, setSubmitted] = React.useState(false)
+  const [hover, setHover] = React.useState(-1);
+  const [submitted, setSubmitted] = React.useState(false);
+  const [feedback, setFeedback] = React.useState('');
+
+  const handleChange = (event) => {
+    setFeedback(event.target.value);
+  };
 
   const handleSubmit = () => {
     setSubmitted(true)
@@ -39,8 +65,8 @@ export default function RatingModal({ isOpen, onClose }) {
       <Box sx={style}>
         {submitted ? (
           <>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-          Thank you for your feedback
+          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{borderRadius: 1}}>
+          Thank you for your feedback!
         </Typography><VolunteerActivismIcon />
         </>):(<><Typography id="modal-modal-title" variant="h6" component="h2">
           Thank you for the conversation! How satisfied are you with our service?
@@ -49,10 +75,29 @@ export default function RatingModal({ isOpen, onClose }) {
         <Rating
           name="simple-controlled"
           value={value}
+          getLabelText={getLabelsText}
           onChange={(event, newValue) => {
             setValue(newValue);
           }}
+          onChangeActive={(event, newHover) => {
+            setHover(newHover);
+          }}
+          emptyIcon={<StarIcon style={{ Opacity: 0.55 }} fontSize="inherit"/>}
         />
+            {value !== null && (
+            <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : value]}</Box>
+          )}
+        
+              <TextField
+              label="Your Feedback"
+              multiline
+              rows={4}
+              variant="outlined"
+              value={feedback}
+              onChange={handleChange}
+              fullWidth
+            />
+
         <Box mt={2} display="flex" justifyContent="space-between">
           <Button
             variant="contained"
