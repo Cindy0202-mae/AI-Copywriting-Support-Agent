@@ -36,7 +36,7 @@ const labels = {
 
 function getLabelsText(value) {
   return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
-  
+
 }
 
 export default function RatingModal({ isOpen, onClose }) {
@@ -87,16 +87,20 @@ export default function RatingModal({ isOpen, onClose }) {
             {value !== null && (
             <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : value]}</Box>
           )}
-        
+          <Box mt={2} display="flex" justifyContent="space-between"></Box>
+
+        <form noValidate autoComplete="off">
               <TextField
-              label="Your Feedback"
-              multiline
-              rows={4}
-              variant="outlined"
-              value={feedback}
-              onChange={handleChange}
-              fullWidth
-            />
+                label="Your Feedback"
+                multiline
+                rows={4}
+                variant="outlined"
+                color="secondary"
+                value={feedback}
+                onChange={handleChange}
+                fullWidth
+              />
+            </form>
 
         <Box mt={2} display="flex" justifyContent="space-between">
           <Button
