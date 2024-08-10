@@ -4,40 +4,55 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import {
   ClerkProvider,
-  SignInButton,
+  RedirectToSignIn,
   SignedIn,
   SignedOut,
   UserButton,
-  RedirectToSignIn,
 } from "@clerk/nextjs";
+import { useTheme, ThemeProvider } from "./Themecontext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
+  const { darkMode } = useTheme(); // Get darkMode from context
+
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>
-          <SignedOut>
-            {/* Redirect to sign-in page if not authenticated */}
-            <RedirectToSignIn />
-          </SignedOut>
-          <SignedIn>
-            {/* Render user profile management options */}
-            <header
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                padding: "1rem",
-              }}
-            >
-              <UserButton />
-            </header>
-            {/* Render the main content */}
-            {children}
-          </SignedIn>
-        </body>
-      </html>
+      <ThemeProvider>
+        <html lang="en">
+          <body
+            className={inter.className}
+            data-theme={darkMode ? "dark" : "light"} // Set data-theme based on darkMode
+          >
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+            <SignedIn>
+              <Header />
+              {children}
+            </SignedIn>
+          </body>
+        </html>
+      </ThemeProvider>
     </ClerkProvider>
+  );
+}
+
+// Header component without the toggle button
+function Header() {
+  const { darkMode } = useTheme();
+
+  return (
+    <header
+      style={{
+        display: "flex",
+        justifyContent: "flex-end",
+        padding: "1rem",
+        backgroundColor: darkMode ? "#333" : "#fff",
+        color: darkMode ? "#fff" : "#000",
+      }}
+    >
+      <UserButton />
+    </header>
   );
 }
