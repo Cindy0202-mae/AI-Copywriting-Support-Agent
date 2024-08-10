@@ -228,11 +228,13 @@ export default function Home() {
           >
             Send
           </Button>
+          {/* button enabled only when there is more than or equal to one user's input */}
           <Button
             variant="contained"
             color="primary"
             onClick={handleModalOpen}
             sx={{ borderRadius: 1 }}
+            disabled={messages.length === 1}
           >
             End
           </Button>
