@@ -21,7 +21,7 @@ export default function Home() {
     },
   ]);
 
-  const [submitted, setSubmitted] = React.useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [message, setMessage] = useState("");
   const { darkMode, toggleDarkMode } = useTheme(); // Use theme context
   const [isModalopen, setIsModalOpen] = useState(false);
@@ -44,9 +44,10 @@ export default function Home() {
   const handleModalOpen = () => {
     setIsModalOpen(true);
     console.log(isModalopen);
-  }
+  };
+
   const handleModalClose = () => {
-    setIsModalOpen(false)
+    setIsModalOpen(false);
   };
 
   const sendMessage = async () => {
@@ -110,161 +111,182 @@ export default function Home() {
       width="100vw"
       height="calc(100vh - 60px)" // Adjust height to clerk navbar
       display="flex"
-      flexDirection="column"
+      justifyContent="center"
       alignItems="center"
+      overflow="hidden"
       bgcolor={darkMode ? "#404040" : "#e8f4f8"}
     >
       <Stack
-        direction="column"
+        direction="row" // Align chatbox and animation side by side
         width="100%"
-        maxWidth="500px"
+        maxWidth="1200px"
         height="calc(100vh - 56px)"
-        borderRadius={2}
-        overflow="hidden"
-        bgcolor={darkMode ? "#333" : "white"}
-        boxShadow={
-          darkMode ? "0 4px 8px rgba(0,0,0,0.5)" : "0 4px 8px rgba(0,0,0,0.1)"
-        }
-        m={2}
+        spacing={2}
+        alignItems="center"
       >
-        <Box
-          width="100%"
-          bgcolor={darkMode ? "#1e1e1e" : "#007BFF"}
-          color={darkMode ? "#ffffff" : "white"}
-          p={2}
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          borderBottom={`1px solid ${darkMode ? "#444" : "#ddd"}`}
-        >
-          <Typography variant="h6" fontWeight="bold">
-            AI Copywriting Support Agent
-          </Typography>
-          <IconButton
-            onClick={toggleDarkMode}
-            sx={{
-              color: darkMode ? "#fff" : "#000",
-              backgroundColor: darkMode ? "#333" : "#fff",
-              borderRadius: "50%",
-              "&:hover": {
-                backgroundColor: darkMode ? "#444" : "#f0f0f0",
-              },
-            }}
-          >
-            {darkMode ? <Brightness7 /> : <Brightness4 />}
-          </IconButton>
-        </Box>
-
         <Stack
           direction="column"
-          spacing={2}
-          flexGrow={1}
-          overflow="auto"
-          p={2}
+          width="55%" 
+          height="100%"
+          borderRadius={2}
+          overflow="hidden"
+          bgcolor={darkMode ? "#333" : "white"}
+          boxShadow={
+            darkMode ? "0 4px 8px rgba(0,0,0,0.5)" : "0 4px 8px rgba(0,0,0,0.1)"
+          }
         >
-          {messages.map((message, index) => (
-            <Box
-              key={index}
-              display="flex"
-              justifyContent={
-                message.role === "assistant" ? "flex-start" : "flex-end"
-              }
+          <Box
+            width="100%"
+            bgcolor={darkMode ? "#1e1e1e" : "#007BFF"}
+            color={darkMode ? "#ffffff" : "white"}
+            p={2}
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            borderBottom={`1px solid ${darkMode ? "#444" : "#ddd"}`}
+          >
+            <Typography variant="h6" fontWeight="bold">
+              AI Copywriting Support Agent
+            </Typography>
+            <IconButton
+              onClick={toggleDarkMode}
+              sx={{
+                color: darkMode ? "#fff" : "#000",
+                backgroundColor: darkMode ? "#333" : "#fff",
+                borderRadius: "50%",
+                "&:hover": {
+                  backgroundColor: darkMode ? "#444" : "#f0f0f0",
+                },
+              }}
             >
+              {darkMode ? <Brightness7 /> : <Brightness4 />}
+            </IconButton>
+          </Box>
+
+          <Stack
+            direction="column"
+            spacing={2}
+            flexGrow={1}
+            overflow="auto"
+            p={2}
+          >
+            {messages.map((message, index) => (
               <Box
-                bgcolor={
-                  message.role === "assistant"
-                    ? darkMode
-                      ? "#555"
-                      : "#007BFF"
-                    : darkMode
-                    ? "#666"
-                    : "#28a745"
+                key={index}
+                display="flex"
+                justifyContent={
+                  message.role === "assistant" ? "flex-start" : "flex-end"
                 }
-                color="white"
-                borderRadius={2}
-                p={2}
-                maxWidth="80%"
-                boxShadow="0 2px 4px rgba(0,0,0,0.1)"
-                sx={{
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-wrap",
-                }}
               >
-                {formatMessage(message.content)}
+                <Box
+                  bgcolor={
+                    message.role === "assistant"
+                      ? darkMode
+                        ? "#555"
+                        : "#007BFF"
+                      : darkMode
+                      ? "#666"
+                      : "#28a745"
+                  }
+                  color="white"
+                  borderRadius={2}
+                  p={2}
+                  maxWidth="80%"
+                  boxShadow="0 2px 4px rgba(0,0,0,0.1)"
+                  sx={{
+                    wordBreak: "break-word",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {formatMessage(message.content)}
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))}
+          </Stack>
+
+          <Stack
+            direction="row"
+            spacing={2}
+            padding={2}
+            alignItems="center"
+            bgcolor={darkMode ? "#424242" : "#f1f1f1"}
+            borderTop={`1px solid ${darkMode ? "#666" : "#ddd"}`}
+          >
+            <TextField
+              label="Type your message"
+              fullWidth
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              multiline
+              minRows={1}
+              maxRows={10}
+              variant="outlined"
+              size="small"
+              sx={{
+                bgcolor: darkMode ? "#424242" : "#ffffff", // Background color of the text field
+                borderRadius: 1,
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: darkMode ? "#ffffff" : "#ccc", // Border color of the text field
+                  },
+                  "&:hover fieldset": {
+                    borderColor: darkMode ? "#ffffff" : "#007BFF", // Border color on hover
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: darkMode ? "#ffffff" : "#007BFF", // Border color when focused
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  color: darkMode ? "#ffffff" : "#000000", // Text color inside the input
+                  "&::placeholder": {
+                    color: darkMode ? "#aaaaaa" : "#888888", // Placeholder text color
+                  },
+                },
+                "& .MuiFormLabel-root": {
+                  color: darkMode ? "#ffffff" : "#000000", // Label color
+                  "&.Mui-focused": {
+                    color: darkMode ? "#ffffff" : "#007BFF", // Label color when focused
+                  },
+                },
+              }}
+            />
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={sendMessage}
+              sx={{ bgcolor: darkMode ? "#424242" : "#007BFF" }}
+            >
+              Send
+            </Button>
+            {/* button enabled only when there is more than or equal to one user's input */}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleModalOpen}
+              sx={{ borderRadius: 1 }}
+              disabled={messages.length <= 1}
+            >
+              End
+            </Button>
+            <RatingModal
+              isOpen={isModalopen}
+              onClose={handleModalClose}
+              submitted={submitted}
+              setSubmitted={setSubmitted}
+              darkMode={darkMode}
+            />
+          </Stack>
         </Stack>
 
-        <Stack
-          direction="row"
-          spacing={2}
-          padding={2}
-          alignItems="center"
-          bgcolor={darkMode ? "#424242" : "#f1f1f1"}
-          borderTop={`1px solid ${darkMode ? "#666" : "#ddd"}`}
-        >
-          <TextField
-            label="Type your message"
-            fullWidth
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            multiline
-            minRows={1}
-            maxRows={10}
-            variant="outlined"
-            size="small"
-            sx={{
-              bgcolor: darkMode ? "#424242" : "#ffffff", // Background color of the text field
-              borderRadius: 1,
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: darkMode ? "#ffffff" : "#ccc", // Border color of the text field
-                },
-                "&:hover fieldset": {
-                  borderColor: darkMode ? "#ffffff" : "#007BFF", // Border color on hover
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: darkMode ? "#ffffff" : "#007BFF", // Border color when focused
-                },
-              },
-              "& .MuiInputBase-input": {
-                color: darkMode ? "#ffffff" : "#000000", // Text color inside the input
-                "&::placeholder": {
-                  color: darkMode ? "#aaaaaa" : "#888888", // Placeholder text color
-                },
-              },
-              "& .MuiFormLabel-root": {
-                color: darkMode ? "#ffffff" : "#000000", // Label color
-                "&.Mui-focused": {
-                  color: darkMode ? "#ffffff" : "#007BFF", // Label color when focused
-                },
-              },
-            }}
+        <Box width="50%" display="flex" justifyContent="center" alignItems="center">
+          <img
+            src="Animation - 1723382805605.gif" 
+            alt="Chatbot Animation"
+            style={{ width: "600px", height: "600px" }}
           />
-
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={sendMessage}
-            sx={{ bgcolor: darkMode ? "#424242" : "#007BFF" }}
-          >
-            Send
-          </Button>
-          {/* button enabled only when there is more than or equal to one user's input */}
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleModalOpen}
-            sx={{ borderRadius: 1 }}
-            // disabled={messages.length === 1}
-            disabled={messages.length <= 1}
-          >
-            End
-          </Button>
-          <RatingModal isOpen={isModalopen} onClose={handleModalClose} submitted={submitted} setSubmitted={setSubmitted} darkMode={darkMode} />
-        </Stack>
+        </Box>
       </Stack>
     </Box>
   );
