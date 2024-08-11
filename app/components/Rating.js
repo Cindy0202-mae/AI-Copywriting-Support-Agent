@@ -4,6 +4,8 @@ import { Typography, Modal, Box, Button, TextField } from "@mui/material";
 import React from "react";
 import { Opacity } from "@mui/icons-material";
 import StarIcon from '@mui/icons-material/Star';
+import { firestore } from "@/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const style = {
   position: "absolute",
@@ -34,11 +36,6 @@ const labels = {
   5: 'Excellent+',
 }
 
-function getLabelsText(value) {
-  return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
-
-}
-
 export default function RatingModal({ isOpen, onClose }) {
   const [value, setValue] = React.useState(0);
   const [hover, setHover] = React.useState(-1);
@@ -50,10 +47,28 @@ export default function RatingModal({ isOpen, onClose }) {
   };
 
   const handleSubmit = () => {
-    setSubmitted(true)
-    // need to implement the logic to save the rating here
+    setSubmitted(true);
+    const userId = "user123";
+    storeFeedback(userId, value, feedback);
   };
-  if (!isOpen) return null;
+
+  async function storeFeedback(userId, rating, feedbackText) {
+    try {
+      await addDoc(collection(firestore, "userFeedback"), {
+        userId,
+        rating: value,
+        feedback,
+        timestamp: serverTimestamp(),
+      });
+      console.log("Feedback successfully submitted!");
+    } catch (error) {
+      console.error("Error submitting feedback: ", error);
+    }
+  };
+
+  function getLabelsText(value) {
+    return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
+  }
 
   return (
     <Modal
@@ -65,31 +80,35 @@ export default function RatingModal({ isOpen, onClose }) {
       <Box sx={style}>
         {submitted ? (
           <>
-          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{borderRadius: 1}}>
-          Thank you for your feedback!
-        </Typography><VolunteerActivismIcon />
-        </>):(<><Typography id="modal-modal-title" variant="h6" component="h2">
-          Thank you for the conversation! How satisfied are you with our service?
-        </Typography>
-        <Box mt={2} display="flex" justifyContent="space-between"></Box>
-        <Rating
-          name="simple-controlled"
-          value={value}
-          getLabelText={getLabelsText}
-          onChange={(event, newValue) => {
-            setValue(newValue);
-          }}
-          onChangeActive={(event, newHover) => {
-            setHover(newHover);
-          }}
-          emptyIcon={<StarIcon style={{ Opacity: 0.55 }} fontSize="inherit"/>}
-        />
+            <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ borderRadius: 1 }}>
+              Thank you for your feedback!
+            </Typography>
+            <VolunteerActivismIcon />
+          </>
+        ) : (
+          <>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Thank you for the conversation! How satisfied are you with our service?
+            </Typography>
+            <Box mt={2} display="flex" justifyContent="space-between"></Box>
+            <Rating
+              name="simple-controlled"
+              value={value}
+              getLabelText={getLabelsText}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+              onChangeActive={(event, newHover) => {
+                setHover(newHover);
+              }}
+              emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+            />
             {value !== null && (
-            <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : value]}</Box>
-          )}
-          <Box mt={2} display="flex" justifyContent="space-between"></Box>
+              <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : value]}</Box>
+            )}
+            <Box mt={2} display="flex" justifyContent="space-between"></Box>
 
-        <form noValidate autoComplete="off">
+            <form noValidate autoComplete="off">
               <TextField
                 label="Your Feedback"
                 multiline
@@ -102,27 +121,28 @@ export default function RatingModal({ isOpen, onClose }) {
               />
             </form>
 
-        <Box mt={2} display="flex" justifyContent="space-between">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            sx={{ borderRadius: 1 }}
-          >
-            Submit!
-          </Button>
-        </Box>
-        <Box mt={2} display="flex" justifyContent="space-between"></Box>
-        <Typography
-          id="modal-modal-title"
-          variant="h6"
-          component="h6"
-          onClick={onClose}
-          sx={{ color: "text.secondary", fontSize: 16 }}
-        >
-          No thanks.
-        </Typography></>)}
-
+            <Box mt={2} display="flex" justifyContent="space-between">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                sx={{ borderRadius: 1 }}
+              >
+                Submit!
+              </Button>
+            </Box>
+            <Box mt={2} display="flex" justifyContent="space-between"></Box>
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h6"
+              onClick={onClose}
+              sx={{ color: "text.secondary", fontSize: 16 }}
+            >
+              No thanks.
+            </Typography>
+          </>
+        )}
       </Box>
     </Modal>
   );
