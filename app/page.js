@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Stack,
@@ -9,6 +9,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
+import RatingModal from "./components/Rating";
 import React from "react";
 import { useTheme } from "./Themecontext";
 
@@ -19,8 +20,34 @@ export default function Home() {
       content: `Hi! I'm the AI Copywriting Support Agent, how can I assist you today?`,
     },
   ]);
+
+  const [submitted, setSubmitted] = React.useState(false);
   const [message, setMessage] = useState("");
   const { darkMode, toggleDarkMode } = useTheme(); // Use theme context
+  const [isModalopen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (submitted) {
+      setMessages([
+        {
+          role: "assistant",
+          content: `Hi! I'm the AI Copywriting Support Agent, how can I assist you today?`,
+        },
+      ]);
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setSubmitted(false);
+      }, 2000); // close modal after 2 secs
+    }
+  }, [submitted]);
+
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+    console.log(isModalopen);
+  }
+  const handleModalClose = () => {
+    setIsModalOpen(false)
+  };
 
   const sendMessage = async () => {
     if (message.trim() === "") return;
@@ -81,7 +108,7 @@ export default function Home() {
   return (
     <Box
       width="100vw"
-      height="100vh"
+      height="calc(100vh - 60px)" // Adjust height to clerk navbar
       display="flex"
       flexDirection="column"
       alignItems="center"
@@ -98,7 +125,7 @@ export default function Home() {
         boxShadow={
           darkMode ? "0 4px 8px rgba(0,0,0,0.5)" : "0 4px 8px rgba(0,0,0,0.1)"
         }
-        mt={2}
+        m={2}
       >
         <Box
           width="100%"
@@ -225,6 +252,18 @@ export default function Home() {
           >
             Send
           </Button>
+          {/* button enabled only when there is more than or equal to one user's input */}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleModalOpen}
+            sx={{ borderRadius: 1 }}
+            // disabled={messages.length === 1}
+            disabled={messages.length <= 1}
+          >
+            End
+          </Button>
+          <RatingModal isOpen={isModalopen} onClose={handleModalClose} submitted={submitted} setSubmitted={setSubmitted} />
         </Stack>
       </Stack>
     </Box>
