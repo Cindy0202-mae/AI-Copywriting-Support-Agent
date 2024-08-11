@@ -11,6 +11,7 @@ import {
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import RatingModal from "./components/Rating";
 import React from "react";
+import { useTheme } from "./Themecontext";
 
 export default function Home() {
   const [messages, setMessages] = useState([
@@ -22,7 +23,7 @@ export default function Home() {
 
   const [submitted, setSubmitted] = React.useState(false);
   const [message, setMessage] = useState("");
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleDarkMode } = useTheme(); // Use theme context
   const [isModalopen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function Home() {
   };
 
   const sendMessage = async () => {
-    if (message.trim() === "") return; // Prevent sending empty messages
+    if (message.trim() === "") return;
     setMessage("");
     setMessages((messages) => [
       ...messages,
@@ -90,7 +91,7 @@ export default function Home() {
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault(); // Prevent the default behavior of Enter key (new line)
+      event.preventDefault();
       sendMessage();
     }
   };
@@ -113,12 +114,11 @@ export default function Home() {
       alignItems="center"
       bgcolor={darkMode ? "#404040" : "#e8f4f8"}
     >
-      {/* Chat Container */}
       <Stack
         direction="column"
         width="100%"
         maxWidth="500px"
-        height="calc(100vh - 56px)" // Adjust height to account for the banner
+        height="calc(100vh - 56px)"
         borderRadius={2}
         overflow="hidden"
         bgcolor={darkMode ? "#333" : "white"}
@@ -127,7 +127,6 @@ export default function Home() {
         }
         m={2}
       >
-        {/* Banner */}
         <Box
           width="100%"
           bgcolor={darkMode ? "#1e1e1e" : "#007BFF"}
@@ -142,7 +141,7 @@ export default function Home() {
             AI Copywriting Support Agent
           </Typography>
           <IconButton
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={toggleDarkMode}
             sx={{
               color: darkMode ? "#fff" : "#000",
               backgroundColor: darkMode ? "#333" : "#fff",
@@ -156,7 +155,6 @@ export default function Home() {
           </IconButton>
         </Box>
 
-        {/* Messages */}
         <Stack
           direction="column"
           spacing={2}
@@ -177,10 +175,10 @@ export default function Home() {
                   message.role === "assistant"
                     ? darkMode
                       ? "#555"
-                      : "#007BFF" // Adjust color for dark mode
+                      : "#007BFF"
                     : darkMode
                     ? "#666"
-                    : "#28a745" // Adjust color for dark mode
+                    : "#28a745"
                 }
                 color="white"
                 borderRadius={2}
@@ -189,7 +187,7 @@ export default function Home() {
                 boxShadow="0 2px 4px rgba(0,0,0,0.1)"
                 sx={{
                   wordBreak: "break-word",
-                  whiteSpace: "pre-wrap", // Preserve whitespace and line breaks
+                  whiteSpace: "pre-wrap",
                 }}
               >
                 {formatMessage(message.content)}
@@ -198,7 +196,6 @@ export default function Home() {
           ))}
         </Stack>
 
-        {/* Input and Button */}
         <Stack
           direction="row"
           spacing={2}
@@ -215,18 +212,15 @@ export default function Home() {
             onKeyDown={handleKeyDown}
             multiline
             minRows={1}
-            maxRows={10} // Allow the text area to grow to a maximum of 10 rows
+            maxRows={10}
             variant="outlined"
             size="small"
             sx={{
-              bgcolor: darkMode ? "#424242" : "white", // Background color for dark mode
+              bgcolor: darkMode ? "#424242" : "#ffffff", // Background color of the text field
               borderRadius: 1,
-              "& .MuiInputLabel-root": {
-                color: darkMode ? "#ffffff" : "black", // Label color for dark mode
-              },
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
-                  borderColor: darkMode ? "#666" : "#ccc", // Border color for dark mode
+                  borderColor: darkMode ? "#ffffff" : "#ccc", // Border color of the text field
                 },
                 "&:hover fieldset": {
                   borderColor: darkMode ? "#ffffff" : "#007BFF", // Border color on hover
@@ -236,15 +230,25 @@ export default function Home() {
                 },
               },
               "& .MuiInputBase-input": {
-                color: darkMode ? "#ffffff" : "black", // Input text color for dark mode
+                color: darkMode ? "#ffffff" : "#000000", // Text color inside the input
+                "&::placeholder": {
+                  color: darkMode ? "#aaaaaa" : "#888888", // Placeholder text color
+                },
+              },
+              "& .MuiFormLabel-root": {
+                color: darkMode ? "#ffffff" : "#000000", // Label color
+                "&.Mui-focused": {
+                  color: darkMode ? "#ffffff" : "#007BFF", // Label color when focused
+                },
               },
             }}
           />
+
           <Button
             variant="contained"
             color="primary"
             onClick={sendMessage}
-            sx={{ borderRadius: 1 }}
+            sx={{ bgcolor: darkMode ? "#424242" : "#007BFF" }}
           >
             Send
           </Button>
@@ -259,7 +263,7 @@ export default function Home() {
           >
             End
           </Button>
-          <RatingModal isOpen={isModalopen} onClose={handleModalClose} submitted={submitted} setSubmitted={setSubmitted} />
+          <RatingModal isOpen={isModalopen} onClose={handleModalClose} submitted={submitted} setSubmitted={setSubmitted} darkMode={darkMode} />
         </Stack>
       </Stack>
     </Box>
