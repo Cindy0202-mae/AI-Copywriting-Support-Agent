@@ -107,7 +107,7 @@ export default function Home() {
   return (
     <Box
       width="100vw"
-      height="100vh"
+      height="calc(100vh - 60px)" // Adjust height to clerk navbar
       display="flex"
       flexDirection="column"
       alignItems="center"
@@ -125,7 +125,7 @@ export default function Home() {
         boxShadow={
           darkMode ? "0 4px 8px rgba(0,0,0,0.5)" : "0 4px 8px rgba(0,0,0,0.1)"
         }
-        mt={2}
+        m={2}
       >
         {/* Banner */}
         <Box

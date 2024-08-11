@@ -54,7 +54,7 @@ export default function RatingModal({ isOpen, onClose, submitted, setSubmitted }
     const userId = user.id; // Get the Clerk user ID
     storeFeedback(userId, value, feedback);
 
-    setValue(null);
+    setValue(0);
     setFeedback('');
   };
 
