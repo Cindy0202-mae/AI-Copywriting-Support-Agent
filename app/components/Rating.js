@@ -6,6 +6,7 @@ import { Opacity } from "@mui/icons-material";
 import StarIcon from '@mui/icons-material/Star';
 import { firestore } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useUser } from '@clerk/clerk-react';
 
 const style = {
   position: "absolute",
@@ -36,11 +37,13 @@ const labels = {
   5: 'Excellent+',
 }
 
-export default function RatingModal({ isOpen, onClose }) {
+export default function RatingModal({ isOpen, onClose, submitted, setSubmitted }) {
   const [value, setValue] = React.useState(0);
   const [hover, setHover] = React.useState(-1);
-  const [submitted, setSubmitted] = React.useState(false);
+  // const [submitted, setSubmitted] = React.useState(false);　// parent component manages this
   const [feedback, setFeedback] = React.useState('');
+
+  const { user } = useUser(); // Access the Clerk user
 
   const handleChange = (event) => {
     setFeedback(event.target.value);
@@ -48,11 +51,14 @@ export default function RatingModal({ isOpen, onClose }) {
 
   const handleSubmit = () => {
     setSubmitted(true);
-    const userId = "user123";
+    const userId = user.id; // Get the Clerk user ID
     storeFeedback(userId, value, feedback);
+
+    setValue(null);
+    setFeedback('');
   };
 
-  async function storeFeedback(userId, rating, feedbackText) {
+  async function storeFeedback(userId) {
     try {
       await addDoc(collection(firestore, "userFeedback"), {
         userId,

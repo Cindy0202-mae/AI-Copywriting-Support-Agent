@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Stack,
@@ -19,14 +19,34 @@ export default function Home() {
       content: `Hi! I'm the AI Copywriting Support Agent, how can I assist you today?`,
     },
   ]);
+
+  const [submitted, setSubmitted] = React.useState(false);
   const [message, setMessage] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [isModalopen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (submitted) {
+      setMessages([
+        {
+          role: "assistant",
+          content: `Hi! I'm the AI Copywriting Support Agent, how can I assist you today?`,
+        },
+      ]);
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setSubmitted(false);
+      }, 2000); // close modal after 2 secs
+    }
+  }, [submitted]);
+
   const handleModalOpen = () => {
     setIsModalOpen(true);
     console.log(isModalopen);
   }
-  const handleModalClose = () => setIsModalOpen(false);
+  const handleModalClose = () => {
+    setIsModalOpen(false)
+  };
 
   const sendMessage = async () => {
     if (message.trim() === "") return; // Prevent sending empty messages
@@ -234,11 +254,12 @@ export default function Home() {
             color="primary"
             onClick={handleModalOpen}
             sx={{ borderRadius: 1 }}
-            disabled={messages.length === 1}
+            // disabled={messages.length === 1}
+            disabled={messages.length <= 1}
           >
             End
           </Button>
-          <RatingModal isOpen={isModalopen} onClose={handleModalClose} />
+          <RatingModal isOpen={isModalopen} onClose={handleModalClose} submitted={submitted} setSubmitted={setSubmitted} />
         </Stack>
       </Stack>
     </Box>
