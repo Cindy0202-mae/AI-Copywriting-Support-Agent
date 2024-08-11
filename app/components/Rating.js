@@ -37,7 +37,7 @@ const labels = {
   5: 'Excellent+',
 }
 
-export default function RatingModal({ isOpen, onClose, submitted, setSubmitted }) {
+export default function RatingModal({ isOpen, onClose, submitted, setSubmitted, darkMode }) {
   const [value, setValue] = React.useState(0);
   const [hover, setHover] = React.useState(-1);
   // const [submitted, setSubmitted] = React.useState(false);　// parent component manages this

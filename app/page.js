@@ -248,7 +248,7 @@ export default function Home() {
             variant="contained"
             color="primary"
             onClick={sendMessage}
-            sx={{ bgcolor: darkMode ? "#007BFF" : "#007BFF" }}
+            sx={{ bgcolor: darkMode ? "#424242" : "#007BFF" }}
           >
             Send
           </Button>
@@ -263,7 +263,7 @@ export default function Home() {
           >
             End
           </Button>
-          <RatingModal isOpen={isModalopen} onClose={handleModalClose} submitted={submitted} setSubmitted={setSubmitted} />
+          <RatingModal isOpen={isModalopen} onClose={handleModalClose} submitted={submitted} setSubmitted={setSubmitted} darkMode={darkMode} />
         </Stack>
       </Stack>
     </Box>
