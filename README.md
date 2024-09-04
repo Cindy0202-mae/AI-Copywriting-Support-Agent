@@ -1,3 +1,16 @@
+# AI Copywriting Support Agent
+You can try!! 👉🏻[Live demo](http://ec2-3-27-244-151.ap-southeast-2.compute.amazonaws.com/)
+
+This Support Agent is supposed to be implemented in our final project and guide our customer.
+
+## Tech Stack & Tools
+- Authentication - Clerk [https://clerk.com/](https://clerk.com/)
+- LLM - OpenAI API [https://openai.com/index/openai-api/](https://openai.com/index/openai-api/)
+- Frontend Library - [https://mui.com/](https://mui.com/)
+- DB - Firebase [https://firebase.google.com/](https://firebase.google.com/)
+
+## Instruction
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
